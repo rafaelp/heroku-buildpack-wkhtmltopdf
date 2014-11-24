@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# this pack is valid for apps deployed on cedar-14 stack
+if [ "$STACK" = "cedar-14" ]; then
+  echo "wkhtmltopdf"
+  exit 0
+else
+  exit 1
+fi
