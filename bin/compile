@@ -13,6 +13,7 @@ BUILD_DIR=$1
 VENDOR_DIR="vendor"
 
 cd $BUILD_DIR
+mkdir -p tmp
 cd tmp
 echo "Extracting files" | indent
 ar x wkhtmltopdf.deb
