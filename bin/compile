@@ -1,19 +1,86 @@
-#!/bin/sh
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
 
-indent() {
-  sed -u 's/^/       /'
-}
+# fail fast
+set -e
 
 BUILD_DIR=$1
+CACHE_DIR=$2
+
+LP_DIR=`cd $(dirname $0); cd ..; pwd`
+
+function error() {
+  echo " !     $*" >&2
+  exit 1
+}
+
+function topic() {
+  echo "-----> $*"
+}
+
+function subtopic() {
+  echo "       $*"
+}
+
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+APT_CACHE_DIR="$CACHE_DIR/apt/cache"
+APT_STATE_DIR="$CACHE_DIR/apt/state"
+
+mkdir -p "$APT_CACHE_DIR/archives/partial"
+mkdir -p "$APT_STATE_DIR/lists/partial"
+
+APT_OPTIONS="-o debug::nolocking=true -o dir::cache=$APT_CACHE_DIR -o dir::state=$APT_STATE_DIR"
+
+topic "Installing wkhtmltopdf"
+
+subtopic "Updating apt caches"
+apt-get $APT_OPTIONS update | indent
+
+packages=("fontconfig" "fontconfig-config" "fonts-dejavu-core" "libaudio2" "libavahi-client3" "libavahi-common-data" "libavahi-common3" "libcups2" "libfontconfig1" "libgstreamer-plugins-base1.0-0" "libgstreamer1.0-0" "libjbig0" "libjpeg-turbo8" "libjpeg8" "libmysqlclient18" "liborc-0.4-0" "libqt4-declarative" "libqt4-network" "libqt4-opengl" "libqt4-script" "libqt4-sql" "libqt4-sql-mysql" "libqt4-xml" "libqt4-xmlpatterns" "libqtcore4" "libqtdbus4" "libqtgui4" "libqtwebkit4" "libtiff5" "libxi6" "libgl1-mesa-dri:amd64" "libgl1-mesa-glx:amd64" "libglapi-mesa:amd64" "mysql-common" "qtcore4-l10n" "wkhtmltopdf" "xvfb")
+for PACKAGE in "${packages[@]}"; do
+  subtopic "Fetching $PACKAGE"
+  apt-get $APT_OPTIONS -y --force-yes -d install --reinstall $PACKAGE | indent
+done
+
+mkdir -p $BUILD_DIR/.apt
+
+for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
+  subtopic "Installing $(basename $DEB)"
+  dpkg -x $DEB $BUILD_DIR/.apt/
+done
+
+mv $BUILD_DIR/.apt/usr/bin/wkhtmltopdf $BUILD_DIR/.apt/usr/bin/wkhtmltopdf-original
+echo 'xvfb-run --auto-servernum --server-num=1 --server-args="-screen 0, 1024x768x24" /app/.apt/usr/bin/wkhtmltopdf-original $*' > $BUILD_DIR/.apt/usr/bin/wkhtmltopdf
+chmod a+x $BUILD_DIR/.apt/usr/bin/wkhtmltopdf
+
+subtopic "Writing profile script"
+mkdir -p $BUILD_DIR/.profile.d
+cat <<EOF >$BUILD_DIR/.profile.d/wkhtmltopdf.sh
+export PATH="\$HOME/.apt/usr/bin:\$PATH"
+export LD_LIBRARY_PATH="\$HOME/.apt/usr/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib/x86_64-linux-gnu/mesa:\$HOME/.apt/usr/lib/i386-linux-gnu:\$HOME/.apt/usr/lib:\$LD_LIBRARY_PATH"
+export LIBRARY_PATH="\$HOME/.apt/usr/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib/x86_64-linux-gnu/mesa:\$HOME/.apt/usr/lib/i386-linux-gnu:\$HOME/.apt/usr/lib:\$LIBRARY_PATH"
+export INCLUDE_PATH="\$HOME/.apt/usr/include:\$INCLUDE_PATH"
+export CPATH="\$INCLUDE_PATH"
+export CPPPATH="\$INCLUDE_PATH"
+export PKG_CONFIG_PATH="\$HOME/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:\$HOME/.apt/usr/lib/i386-linux-gnu/pkgconfig:\$HOME/.apt/usr/lib/pkgconfig:\$PKG_CONFIG_PATH"
+EOF
+
 VENDOR_DIR="vendor"
 cd $BUILD_DIR
 mkdir -p tmp
 
 WKHTMLTOPDF_DOWNLOAD_URL="http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb"
-echo "-----> Downloading wkhtmltopdf: $WKHTMLTOPDF_DOWNLOAD_URL"
+topic "Downloading wkhtmltopdf: $WKHTMLTOPDF_DOWNLOAD_URL"
 curl -L --silent -o tmp/wkhtmltopdf.deb $WKHTMLTOPDF_DOWNLOAD_URL
 
-echo "-----> Installing wkhtmltopdf 0.12.1"
+topic "Installing wkhtmltopdf 0.12.1"
 cd tmp
 echo "Extracting files" | indent
 ar x wkhtmltopdf.deb
@@ -34,10 +101,3 @@ export INCLUDE_PATH="\$HOME/vendor/wkhtmltopdf/include:\$INCLUDE_PATH"
 export CPATH="\$INCLUDE_PATH"
 export CPPPATH="\$INCLUDE_PATH"
 EOF
-
-export PATH="$BUILD_DIR/vendor/wkhtmltopdf/bin:$PATH"
-export LD_LIBRARY_PATH="$BUILD_DIR/vendor/wkhtmltopdf/lib:$LD_LIBRARY_PATH"
-export LIBRARY_PATH="$BUILD_DIR/vendor/wkhtmltopdf/lib:$LIBRARY_PATH"
-export INCLUDE_PATH="$BUILD_DIR/vendor/wkhtmltopdf/include:$INCLUDE_PATH"
-export CPATH="$INCLUDE_PATH"
-export CPPPATH="$INCLUDE_PATH"
