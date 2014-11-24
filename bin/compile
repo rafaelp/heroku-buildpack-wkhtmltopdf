@@ -26,4 +26,18 @@ rm tmp/wkhtmltopdf.deb
 echo "Writing profile script" | indent
 PROFILE_PATH="$BUILD_DIR/.profile.d/wkhtmltopdf.sh"
 mkdir -p $(dirname $PROFILE_PATH)
-echo 'export PATH="$PATH:vendor/wkhtmltopdf/bin"' >> $PROFILE_PATH
+cat <<EOF >$PROFILE_PATH
+export PATH="\$HOME/vendor/wkhtmltopdf/bin:\$PATH"
+export LD_LIBRARY_PATH="\$HOME/vendor/wkhtmltopdf/lib:\$LD_LIBRARY_PATH"
+export LIBRARY_PATH="\$HOME/vendor/wkhtmltopdf/lib:\$LIBRARY_PATH"
+export INCLUDE_PATH="\$HOME/vendor/wkhtmltopdf/include:\$INCLUDE_PATH"
+export CPATH="\$INCLUDE_PATH"
+export CPPPATH="\$INCLUDE_PATH"
+EOF
+
+export PATH="$BUILD_DIR/vendor/wkhtmltopdf/bin:$PATH"
+export LD_LIBRARY_PATH="$BUILD_DIR/vendor/wkhtmltopdf/lib:$LD_LIBRARY_PATH"
+export LIBRARY_PATH="$BUILD_DIR/vendor/wkhtmltopdf/lib:$LIBRARY_PATH"
+export INCLUDE_PATH="$BUILD_DIR/vendor/wkhtmltopdf/include:$INCLUDE_PATH"
+export CPATH="$INCLUDE_PATH"
+export CPPPATH="$INCLUDE_PATH"
