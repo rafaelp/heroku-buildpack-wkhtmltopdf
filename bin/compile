@@ -4,16 +4,16 @@ indent() {
   sed -u 's/^/       /'
 }
 
+BUILD_DIR=$1
+VENDOR_DIR="vendor"
+cd $BUILD_DIR
+mkdir -p tmp
+
 WKHTMLTOPDF_DOWNLOAD_URL="http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb"
 echo "-----> Downloading wkhtmltopdf: $WKHTMLTOPDF_DOWNLOAD_URL"
 curl -L --silent -o tmp/wkhtmltopdf.deb $WKHTMLTOPDF_DOWNLOAD_URL
 
 echo "-----> Installing wkhtmltopdf 0.12.1"
-BUILD_DIR=$1
-VENDOR_DIR="vendor"
-
-cd $BUILD_DIR
-mkdir -p tmp
 cd tmp
 echo "Extracting files" | indent
 ar x wkhtmltopdf.deb
