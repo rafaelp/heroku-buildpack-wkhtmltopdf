@@ -14,7 +14,7 @@ The following wkhtmltopdf versions are available:
 
 [Version 0.12.1 released on June 26, 2014](https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf/tree/0.12.1)
 
-This branch work with version `0.12.1`
+This branch works with version `0.12.1`
 
 ### Stack
 
