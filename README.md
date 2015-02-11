@@ -6,9 +6,12 @@ It is designed to be used with [heroku-buildpack-multi](https://github.com/ddoll
 
 This is based on https://github.com/jayzes/heroku-buildpack-pngquant.
 
-### Version
+### Versions
 
-It is configures with wkhtmltopdf version 0.12.2.1 released on January 19, 2015.
+The following wkhtmltopdf versions are available.
+
+[Version 0.12.2.1 released on January 19, 2015](https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf/tree/0.12.2.1)
+[Version 0.12.1 released on June 26, 2014](https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf/tree/0.12.1)
 
 ### Stack
 
@@ -18,7 +21,7 @@ This is designed to be used on [Cedar-14 Stack](https://devcenter.heroku.com/art
 
 Add a `.buildpacks` file to the root of your repo that contains this buildpack URL and your real buildpack URL:
 
-    https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf
+    https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf#
     https://github.com/heroku/heroku-buildpack-ruby
 
 Then create an application using the multi buildpack:
@@ -28,6 +31,15 @@ Then create an application using the multi buildpack:
 or configure an existing application:
 
     $ heroku config BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi
+
+Deploy your applicatio.
+
+    $ git push heroku master
+
+Remember to clean your repository cache if you are updating the version of buildpack. To do that, run:
+
+    $ heroku plugins:install https://github.com/heroku/heroku-repo.git
+    $ heroku repo:purge_cache -a appname
 
 You can verify that everything is properly installed by running the following command:
 
