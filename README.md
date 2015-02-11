@@ -8,7 +8,7 @@ This is based on https://github.com/jayzes/heroku-buildpack-pngquant.
 
 ### Version
 
-It is configures with wkhtmltopdf version 0.12.1 released on June 26, 2014.
+It is configures with wkhtmltopdf version 0.12.2.1 released on January 19, 2015.
 
 ### Stack
 
@@ -35,7 +35,7 @@ You can verify that everything is properly installed by running the following co
 
 The output should be:
 
-    wkhtmltopdf 0.12.1 (with patched qt)
+    wkhtmltopdf 0.12.2.1 (with patched qt)
 
 ## Issues
 

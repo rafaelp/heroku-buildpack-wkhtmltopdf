@@ -14,12 +14,12 @@ CACHE_DIR=$2
 
 DEB="$CACHE_DIR/wkhtmltopdf.deb"
 if [ ! -f $DEB ]; then
-  WKHTMLTOPDF_DOWNLOAD_URL="http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb"
+  WKHTMLTOPDF_DOWNLOAD_URL="http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb"
   echo "-----> Downloading wkhtmltopdf: $WKHTMLTOPDF_DOWNLOAD_URL"
   curl -L --silent -o $DEB $WKHTMLTOPDF_DOWNLOAD_URL
 fi
 
-echo "-----> Installing wkhtmltopdf 0.12.1"
+echo "-----> Installing wkhtmltopdf 0.12.2.1"
 mkdir -p $BUILD_DIR/.apt
 dpkg -x $DEB $BUILD_DIR/.apt/
 
