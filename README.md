@@ -8,7 +8,13 @@ This is based on https://github.com/jayzes/heroku-buildpack-pngquant.
 
 ### Version
 
-It is configures with wkhtmltopdf version 0.12.1 released on June 26, 2014.
+The following wkhtmltopdf versions are available:
+
+[Version 0.12.2.1 released on January 19, 2015](https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf/tree/0.12.2.1)
+
+[Version 0.12.1 released on June 26, 2014](https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf/tree/0.12.1)
+
+This branch work with version `0.12.1`
 
 ### Stack
 
@@ -18,7 +24,7 @@ This is designed to be used on [Cedar-14 Stack](https://devcenter.heroku.com/art
 
 Add a `.buildpacks` file to the root of your repo that contains this buildpack URL and your real buildpack URL:
 
-    https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf
+    https://github.com/rafaelp/heroku-buildpack-wkhtmltopdf#0.12.1
     https://github.com/heroku/heroku-buildpack-ruby
 
 Then create an application using the multi buildpack:
