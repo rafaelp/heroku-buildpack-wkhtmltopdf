@@ -33,7 +33,7 @@ Then create an application using the multi buildpack:
 
 or configure an existing application:
 
-    $ heroku config BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi
+    $ heroku config:set BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi
 
 Deploy your applicatio.
 
